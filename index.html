@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe</title>
+
+    <link href="/ext/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <header>
+        <h1>Tic-Tac-Toe</h1>
+        <p>Description</p>
+    </header>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
+    <script>
+        async function connected () {
+            if (typeof web3 === 'undefined') {
+                alert(
+                "You don't have Wallet extension in browser. Please install it and reload the page. You'll need to use a desktop computer."
+                )
+            }
+            if (window.web3) {
+                window.web3 = await new Web3(window.web3.currentProvider)
+                await window.web3.currentProvider.enable()
+                return true
+            }
+            return false
+        };
+
+        const ammerEdge = {
+            chainName: 'Ammer Edge',
+            chainId: 100,
+            nativeCurrency: { name: 'Ammer Coin', decimals: 18, symbol: 'AMR' },
+            rpcUrls: ['https://ammer.network:10002']
+        }
+
+        async function setupNetwork (network) {
+            if (window.ethereum.networkVersion !== network.chainId) {
+                network.chainId = window.web3.utils.toHex(network.chainId)
+                try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                    network
+                    ]
+                })
+                } catch (e) {
+                    console.log(e.message)
+                }
+
+                await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: network.chainId }]
+                })
+            }
+        }
+
+        let connected = await connected();
+        if (connected) {
+            await setupNetwork(ammerEdge)
+        }
+    </script>
+</body>
+
+</html>
+
