@@ -34,6 +34,7 @@ contract TicTacToe {
     }
 
     struct Room {
+        address currentPlayer;
         address playerO;
         address playerX;
         int8[9] board;
@@ -48,7 +49,7 @@ contract TicTacToe {
 
     function createRoom() public {
         int8[9] memory board = int8[9](emptyBoard);
-        Room memory room = Room(msg.sender, address(0), board);
+        Room memory room = Room(address(0), msg.sender, address(0), board);
         rooms.push(room);
     }
 
@@ -56,5 +57,7 @@ contract TicTacToe {
         rooms[roomNumber].playerX = msg.sender;
     }
 
-    
+    function makeMove(uint8 index) public {
+        
+    }
 }
