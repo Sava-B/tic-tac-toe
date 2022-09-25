@@ -15,10 +15,28 @@
     <header>
         <h1>Tic-Tac-Toe</h1>
         <p>Description</p>
+        <button type="button">Create a room</button>
     </header>
+
+    <main>
+        <ul>
+            <li>
+                <h2>
+                    <a href="#">
+                        0x000000000000
+                    </a>
+                </h2>
+            </li>
+        </ul>
+    </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script>
+        // 1. Connect to the blockchain via user's Metamask
+        // 2. Request our smart contract's public method that will return all the available rooms
+        // 3. 
+
+
         async function connected () {
             if (typeof web3 === 'undefined') {
                 alert(
@@ -32,6 +50,8 @@
             }
             return false
         };
+
+
 
         const ammerEdge = {
             chainName: 'Ammer Edge',
