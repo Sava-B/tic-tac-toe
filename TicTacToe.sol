@@ -38,6 +38,7 @@ contract TicTacToe {
         address playerO;
         address playerX;
         int8[9] board;
+        address winner;
     }
     Room[] public rooms; // contract.methods.rooms() -> []Room
 
@@ -49,7 +50,7 @@ contract TicTacToe {
 
     function createRoom() public {
         int8[9] memory board = int8[9](emptyBoard);
-        Room memory room = Room(address(0), msg.sender, address(0), board);
+        Room memory room = Room(msg.sender, msg.sender, address(0), board);
         rooms.push(room);
     }
 
@@ -57,7 +58,46 @@ contract TicTacToe {
         rooms[roomNumber].playerX = msg.sender;
     }
 
-    function makeMove(uint8 index) public {
+    function hasWinner(int8[9] board) private returns (bool) {
+        for (uint i = 0; i < winningCases.length; i++) {
+            WinningCase memory currentCase = winningCases[i];
+            uint firstIndex = currentCase.firstIndex;
+            uint secondIndex = currentCase.secondIndex;
+            uint thirdIndex = currentCase.thirdIndex;
+            if (board[firstIndex] == board[secondIndex] && board[secondIndex] == board[tthirdIndex] && board[firstIndex] != EMPTY_MOVE) {
+                winnerCase = currentCase;
+                return true;
+            }
+        }
         
+        return false;
     }
-}
+
+    function getWinnerAddress() private view returns (address winner) {
+        return winnerCase.firstIndex == 0 ? playerO : playerX;
+    }
+    
+    // Check if board is full
+    function isBoardFull(int8[9] board) private view returns (bool) {
+        for (uint i = 0; i < board.length ; i++){
+            if (board[i] == EMPTY_MOVE){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function makeMove(uint8 index, uint256 roomNumber) public {
+        require(rooms.length == (index-1), "The room with corresponding number doesn't exist.");
+        require(rooms[roomNumber].playerX != address(0), "Player X hasn't joined yet.");        
+        require(rooms[roomNumber].currentPlayer == msg.sender, "It's not your turn.");
+        require(rooms[roomNumber].board[index] == EMPTY_MOVE, "This square is taken.");
+        require(isBoardFull(rooms[roomNumber].board), "The board is full, game's finished.");      
+
+        if (msg.sender == rooms[roomNumber].playerX) {
+            rooms[roomNumber].board[index] = X_MOVE;
+        } else {
+            rooms[roomNumber].board[index] = O_MOVE;
+        }
+    }
+}   
