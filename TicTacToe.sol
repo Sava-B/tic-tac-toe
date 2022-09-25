@@ -50,7 +50,7 @@ contract TicTacToe {
 
     function createRoom() public {
         int8[9] memory board = int8[9](emptyBoard);
-        Room memory room = Room(msg.sender, msg.sender, address(0), board);
+        Room memory room = Room(msg.sender, msg.sender, address(0), board, address(0));
         rooms.push(room);
     }
 
@@ -58,18 +58,19 @@ contract TicTacToe {
         rooms[roomNumber].playerX = msg.sender;
     }
 
-    function hasWinner(int8[9] board) private returns (bool) {
+    function hasWinner(uint8 roomIndex) private returns (bool) {
         for (uint i = 0; i < winningCases.length; i++) {
             WinningCase memory currentCase = winningCases[i];
             uint firstIndex = currentCase.firstIndex;
             uint secondIndex = currentCase.secondIndex;
             uint thirdIndex = currentCase.thirdIndex;
-            if (board[firstIndex] == board[secondIndex] && board[secondIndex] == board[tthirdIndex] && board[firstIndex] != EMPTY_MOVE) {
-                winnerCase = currentCase;
+            if (rooms[roomIndex].board[firstIndex] == rooms[roomIndex].board[secondIndex] 
+            && rooms[roomIndex].board[secondIndex] == rooms[roomIndex].board[thirdIndex] 
+            && rooms[roomIndex].board[firstIndex] != EMPTY_MOVE) {
+                rooms[roomIndex].winner;
                 return true;
             }
         }
-        
         return false;
     }
 
@@ -77,7 +78,6 @@ contract TicTacToe {
         return winnerCase.firstIndex == 0 ? playerO : playerX;
     }
     
-    // Check if board is full
     function isBoardFull(int8[9] board) private view returns (bool) {
         for (uint i = 0; i < board.length ; i++){
             if (board[i] == EMPTY_MOVE){
