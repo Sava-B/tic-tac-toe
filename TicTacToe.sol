@@ -39,6 +39,7 @@ contract TicTacToe {
         address playerX;
         int8[9] board;
         address winner;
+        bool isGameFinished;
     }
     Room[] public rooms; // contract.methods.rooms() -> []Room
 
@@ -50,7 +51,7 @@ contract TicTacToe {
 
     function createRoom() public {
         int8[9] memory board = int8[9](emptyBoard);
-        Room memory room = Room(msg.sender, msg.sender, address(0), board, address(0));
+        Room memory room = Room(msg.sender, msg.sender, address(0), board, address(0), false);
         rooms.push(room);
     }
 
@@ -58,7 +59,7 @@ contract TicTacToe {
         rooms[roomNumber].playerX = msg.sender;
     }
 
-    function hasWinner(uint8 roomIndex) private returns (bool) {
+    function hasWinner(uint8 roomIndex) public view returns (address) {
         for (uint i = 0; i < winningCases.length; i++) {
             WinningCase memory currentCase = winningCases[i];
             uint firstIndex = currentCase.firstIndex;
@@ -67,18 +68,19 @@ contract TicTacToe {
             if (rooms[roomIndex].board[firstIndex] == rooms[roomIndex].board[secondIndex] 
             && rooms[roomIndex].board[secondIndex] == rooms[roomIndex].board[thirdIndex] 
             && rooms[roomIndex].board[firstIndex] != EMPTY_MOVE) {
-                rooms[roomIndex].winner;
-                return true;
+                if (currentCase.firstIndex == 0) {
+                    return rooms[roomIndex].playerO;
+                } 
+                return rooms[roomIndex].playerX;
+            } else {
+                return address(0);
             }
         }
-        return false;
-    }
-
-    function getWinnerAddress() private view returns (address winner) {
-        return winnerCase.firstIndex == 0 ? playerO : playerX;
+        return address(0);
     }
     
-    function isBoardFull(int8[9] board) private view returns (bool) {
+    function isBoardFull(uint256 roomNumber) private view returns (bool) {
+        int8[9] memory board = rooms[roomNumber].board;
         for (uint i = 0; i < board.length ; i++){
             if (board[i] == EMPTY_MOVE){
                 return false;
@@ -92,12 +94,20 @@ contract TicTacToe {
         require(rooms[roomNumber].playerX != address(0), "Player X hasn't joined yet.");        
         require(rooms[roomNumber].currentPlayer == msg.sender, "It's not your turn.");
         require(rooms[roomNumber].board[index] == EMPTY_MOVE, "This square is taken.");
-        require(isBoardFull(rooms[roomNumber].board), "The board is full, game's finished.");      
+        require(rooms[roomNumber].isGameFinished, "The board is full, game's finished.");
 
         if (msg.sender == rooms[roomNumber].playerX) {
             rooms[roomNumber].board[index] = X_MOVE;
         } else {
             rooms[roomNumber].board[index] = O_MOVE;
         }
+
+        address winner = hasWinner(index);
+        if (winner != address(0)) {
+            rooms[roomNumber].isGameFinished = true;
+            rooms[roomNumber].winner = winner;
+        } else if (isBoardFull(roomNumber)) {
+            rooms[roomNumber].isGameFinished = true;
+        }
     }
-} 
+}
