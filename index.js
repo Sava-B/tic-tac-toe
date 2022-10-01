@@ -10,4 +10,5 @@ async function getRoom(contract, room) {
     return contract.methods.rooms(room).call();
 }
 
-console.log(await getRoom(contract, 0));
+let room = await getRoom(contract, 0);
+console.log(room);
