@@ -39,7 +39,7 @@
         const contract = new web3.eth.Contract(interface, address);
 
         async function getRoom(contract, room) {
-            return contract.methods.rooms(room);
+            return contract.methods.rooms(room).call();
         }
 
         console.log(await getRoom(contract, 0));
