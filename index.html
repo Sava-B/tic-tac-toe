@@ -32,59 +32,17 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
     <script>
-        // 1. Connect to the blockchain via user's Metamask
-        // 2. Request our smart contract's public method that will return all the available rooms
-        // 3. 
+        const address = '0xE3e86D75639Df779416cA16f264ffA7fbe68775f'
+        const interface = [{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]
 
+        const web3 = new Web3('https://goerli.infura.io/v3/')
+        const contract = new web3.eth.Contract(interface, address)
 
-        async function connected () {
-            if (typeof web3 === 'undefined') {
-                alert(
-                "You don't have Wallet extension in browser. Please install it and reload the page. You'll need to use a desktop computer."
-                )
-            }
-            if (window.web3) {
-                window.web3 = await new Web3(window.web3.currentProvider)
-                await window.web3.currentProvider.enable()
-                return true
-            }
-            return false
-        };
-
-
-
-        const ammerEdge = {
-            chainName: 'Ammer Edge',
-            chainId: 100,
-            nativeCurrency: { name: 'Ammer Coin', decimals: 18, symbol: 'AMR' },
-            rpcUrls: ['https://ammer.network:10002']
+        async function getRooms(contract) {
+            return contract.methods.rooms()
         }
 
-        async function setupNetwork (network) {
-            if (window.ethereum.networkVersion !== network.chainId) {
-                network.chainId = window.web3.utils.toHex(network.chainId)
-                try {
-                await window.ethereum.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [
-                    network
-                    ]
-                })
-                } catch (e) {
-                    console.log(e.message)
-                }
-
-                await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: network.chainId }]
-                })
-            }
-        }
-
-        let connected = await connected();
-        if (connected) {
-            await setupNetwork(ammerEdge)
-        }
+        console.log(await getRooms(contract))
     </script>
 </body>
 
