@@ -10,5 +10,7 @@ async function getRoom(contract, room) {
     return contract.methods.rooms(room).call();
 }
 
-let room = await getRoom(contract, 0);
-console.log(room);
+document.onload = async function() {
+    let room = await getRoom(contract, 0);
+    console.log(room);
+}
