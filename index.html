@@ -20,7 +20,7 @@
     <header class="mt-2">
         <h1>Tic-Tac-Toe</h1>
         <p>Description</p>
-        <button class="btn btn-primary" type="button">Create a room</button>
+        <button id="createRoom" class="btn btn-primary" type="button">Create a room</button>
     </header>
 
     <main>
@@ -97,8 +97,8 @@
         }
 
 
-        const address = '0x5ECFd87C8D12Be11DB4017D5ac2A61Be841072Bf';
-        const interface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]';
+        const address = '0xa9C46541383fA83cb3f60c1441896C564bebfF65';
+        const interface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"statfbility":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]';
 
         async function getRoom(contract, number) {
             return contract.methods.rooms(number).call();
@@ -110,7 +110,7 @@
                     const room = await getRoom(i);
                     let player;
                     if (room.playerO == '0x0000000000000000000000000000000000000000') {
-                        player = room.playerX 
+                        player = room.playerX
                     } else {
                         player = room.playerO
                     }
@@ -130,19 +130,29 @@
             }
         }
 
+        let accounts;
+        let contract;
         const initialize = async () => {
             const metamask = await connected()
             if (metamask) {
                 setupNetwork(1);
 
-                const accounts = await ethereum.request({ method: 'eth_accounts' });
-                const contract = new web3.eth.Contract(JSON.parse(interface), address);
-
-                let room = await getRoom(contract);
-                console.log(room);
+                accounts = await ethereum.request({ method: 'eth_accounts' });
+                contract = new web3.eth.Contract(JSON.parse(interface), address);
             }
         };
         window.addEventListener('DOMContentLoaded', initialize);
+
+        document.getElementById('createRoom').addEventListener("click", async () => {
+            contract.methods.createRoom().send({ from: accounts[0] })
+                .on('receipt', (receipt) => {
+                    console.log(receipt.events.returnValues);
+                    // window.location = window.location + '/room.html#';
+                })
+                .on('error', (error) => {
+                    console.log(error)
+                })
+        })
     </script>
 </body>
 

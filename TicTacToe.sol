@@ -49,11 +49,14 @@ contract TicTacToe {
 
     int8[9] private emptyBoard = [EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE];
 
-    function createRoom() public returns (uint256){
+    event RoomCreation (
+        uint256 roomNumber
+    );
+    function createRoom() public {
         int8[9] memory board = int8[9](emptyBoard);
         Room memory room = Room(msg.sender, msg.sender, address(0), board, address(0), false);
         rooms.push(room);
-        return rooms.length - 1;
+        emit RoomCreation(rooms.length - 1);
     }
 
     function joinRoom(uint256 roomNumber) public {
