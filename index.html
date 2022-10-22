@@ -9,13 +9,18 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .container {
+            max-width: 400px;
+        }
+    </style>
 </head>
 
-<body>
-    <header>
+<body class="container-sm">
+    <header class="mt-2">
         <h1>Tic-Tac-Toe</h1>
         <p>Description</p>
-        <button type="button">Create a room</button>
+        <button class="btn btn-primary" type="button">Create a room</button>
     </header>
 
     <main>
@@ -92,7 +97,7 @@
         }
 
 
-        const address = '0xE3e86D75639Df779416cA16f264ffA7fbe68775f';
+        const address = '0x5ECFd87C8D12Be11DB4017D5ac2A61Be841072Bf';
         const interface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]';
 
         async function getRoom(contract, number) {
@@ -110,7 +115,7 @@
                         player = room.playerO
                     }
                     const html = `
-                    <li>
+                    <li class="card">
                         <h2>
                             <a href="#">
                                 ${player}
