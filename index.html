@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic-Tac-Toe</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="index.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
@@ -19,20 +19,126 @@
     </header>
 
     <main>
-        <ul>
-            <li>
-                <h2>
-                    <a href="#">
-                        0x000000000000
-                    </a>
-                </h2>
-            </li>
+        <ul id="rooms">
+
         </ul>
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
-    <script src="index.js"></script>
+    <script>
+        async function connected() {
+            if (typeof web3 === 'undefined') {
+                alert(
+                    "You don't have Wallet Extension in browser. Please install it and reload the page. You'll need to use a desktop computer."
+                )
+            }
+            if (window.web3) {
+                window.web3 = await new Web3(window.web3.currentProvider)
+                await window.web3.currentProvider.enable()
+
+                return true
+            }
+            return false
+        };
+
+        const networks = [
+            {
+                chainName: 'BNB Smart Chain',
+                chainId: 56,
+                nativeCurrency: { name: 'BNB', decimals: 18, symbol: 'BNB' },
+                rpcUrls: ['https://bsc-dataseed.binance.org/']
+            },
+            {
+                chainName: 'BNB Smart Chain Testnet',
+                chainId: 97,
+                nativeCurrency: { name: 'BNB', decimals: 18, symbol: 'BNB' },
+                rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/']
+            },
+            {
+                chainName: 'Polygon',
+                chainId: 137,
+                nativeCurrency: { name: 'Polygon', decimals: 18, symbol: 'MATIC' },
+                rpcUrls: ['https://polygon-rpc.com/']
+            },
+            {
+                chainName: 'Polygon Testnet',
+                chainId: 80001,
+                nativeCurrency: { name: 'Polygon', decimals: 18, symbol: 'MATIC' },
+                rpcUrls: ['https://rpc-mumbai.matic.today']
+            },
+        ]
+
+        async function setupNetwork(networkId) {
+            const network = networks[networkId]
+            const success = await connected()
+            console.log(success)
+
+            if (window.ethereum.networkVersion !== network.chainId) {
+                network.chainId = window.web3.utils.toHex(network.chainId)
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [
+                            network
+                        ]
+                    })
+                } catch { }
+
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: network.chainId }]
+                })
+            }
+        }
+
+
+        const address = '0xE3e86D75639Df779416cA16f264ffA7fbe68775f';
+        const interface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]';
+
+        async function getRoom(contract, number) {
+            return contract.methods.rooms(number).call();
+        }
+        async function loadRooms() {
+            const rooms = document.getElementById('rooms')
+            for (let i = 0; i < Infinity; i++) {
+                try {
+                    const room = await getRoom(i);
+                    let player;
+                    if (room.playerO == '0x0000000000000000000000000000000000000000') {
+                        player = room.playerX 
+                    } else {
+                        player = room.playerO
+                    }
+                    const html = `
+                    <li>
+                        <h2>
+                            <a href="#">
+                                ${player}
+                            </a>
+                        </h2>
+                    </li>
+                    `
+                    rooms.innerHTML = rooms.innerHTML + html
+                } catch (e) {
+                    break;
+                }
+            }
+        }
+
+        const initialize = async () => {
+            const metamask = await connected()
+            if (metamask) {
+                setupNetwork(1);
+
+                const accounts = await ethereum.request({ method: 'eth_accounts' });
+                const contract = new web3.eth.Contract(JSON.parse(interface), address);
+
+                let room = await getRoom(contract);
+                console.log(room);
+            }
+        };
+        window.addEventListener('DOMContentLoaded', initialize);
+    </script>
 </body>
 
 </html>
-
