@@ -105,10 +105,13 @@
         }
         async function loadRooms() {
             const rooms = document.getElementById('rooms')
+            console.log(rooms)
             for (let i = 0; i < Infinity; i++) {
-                try {
+                console.log(i)
+                // try {
                     const room = await getRoom(i);
-                    let player;
+
+
                     if (room.playerO == '0x0000000000000000000000000000000000000000') {
                         player = room.playerX
                     } else {
@@ -124,9 +127,9 @@
                     </li>
                     `
                     rooms.innerHTML = rooms.innerHTML + html
-                } catch (e) {
-                    break;
-                }
+                // } catch (e) {
+                //     break;
+                // }
             }
         }
 
@@ -139,6 +142,7 @@
 
                 accounts = await ethereum.request({ method: 'eth_accounts' });
                 contract = new web3.eth.Contract(JSON.parse(interface), address);
+                await loadRooms()
             }
         };
         window.addEventListener('DOMContentLoaded', initialize);
