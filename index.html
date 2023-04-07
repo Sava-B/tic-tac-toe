@@ -108,7 +108,7 @@
             console.log(rooms)
             for (let i = 0; i < Infinity; i++) {
                 console.log(i)
-                // try {
+                try {
                     const room = await getRoom(contract, i);
 
                     if (room.playerO == '0x0000000000000000000000000000000000000000') {
@@ -126,9 +126,9 @@
                     </li>
                     `
                     rooms.innerHTML = rooms.innerHTML + html
-                // } catch (e) {
-                //     break;
-                // }
+                } catch (e) {
+                    break;
+                }
             }
         }
 
