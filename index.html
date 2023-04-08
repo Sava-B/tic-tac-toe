@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- Make individual room page -->
+
+<!-- Convert to preact -->
+
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -109,9 +113,7 @@
             for (let i = 0; i < Infinity; i++) {
                 console.log(i)
                 // try {
-                    const room = await getRoom(i);
-
-
+                    const room = await getRoom(contract, i);
                     if (room.playerO == '0x0000000000000000000000000000000000000000') {
                         player = room.playerX
                     } else {
