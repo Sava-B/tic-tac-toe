@@ -100,13 +100,13 @@
             }
         }
 
-
         const address = '0xa9C46541383fA83cb3f60c1441896C564bebfF65';
         const interface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"statfbility":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]';
 
         async function getRoom(contract, number) {
             return contract.methods.rooms(number).call();
         }
+
         async function loadRooms() {
             const rooms = document.getElementById('rooms')
             console.log(rooms)
@@ -129,9 +129,9 @@
                     </li>
                     `
                     rooms.innerHTML = rooms.innerHTML + html
-                // } catch (e) {
-                //     break;
-                // }
+                } catch (e) {
+                    break;
+                }
             }
         }
 
