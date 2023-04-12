@@ -1,12 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Room</title>
-</head>
-<body>
-    
-</body>
+    <script type="module">
+      import {
+        html,
+        render,
+        Component
+      } from "https://unpkg.com/htm/preact/standalone.module.js";
+
+      class App extends Component {
+        render( page ) {
+            return html`
+            <h1> Room Page </h1>
+            `
+        }
+      }
+
+    render(html`<${App} page="All" />`, document.body);
+    </script>
+  </head>
+  <body></body>
 </html>
