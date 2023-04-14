@@ -49,7 +49,7 @@ class App extends Component {
 
   render (_, { rooms }) {
     return html`
-      <div class="container">
+      <div class="container p-1">
         <header class="mb-4">
             <h1>Blockchained Tic-Tac-Toe</h1>
             <button class="btn btn-primary" onclick=${this.createRoom}>Create Room</button>
@@ -70,7 +70,7 @@ class App extends Component {
 }
 
 const Room = ({ roomId, playerO, playerX }) => html`
-  <li class="card m-2 p-2">
+  <li class="card shadow-sm m-2 p-2">
     <h2><a href="room.html#${roomId}">Room ${roomId}</a></h2>
     <p>Player O: ${playerO}</p>
     <p>Player X: ${playerX}</p>
