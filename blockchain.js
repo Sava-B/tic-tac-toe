@@ -1,6 +1,6 @@
 import Web3 from 'https://cdn.esm.sh/v58/web3@1.6.1/es2021/web3.js'
 
-export async function connected () {
+export async function connected() {
   if (typeof web3 === 'undefined') {
     alert(
       "You don't have Wallet Extension in browser. Please install it and reload the page. You'll need to use a desktop computer."
@@ -43,7 +43,7 @@ const networks = [
   }
 ]
 
-export async function setupNetwork (networkId) {
+export async function setupNetwork(networkId) {
   const network = networks[networkId]
   const success = await connected()
   console.log(success)
@@ -70,11 +70,11 @@ export const contractAddress = '0xa9C46541383fA83cb3f60c1441896C564bebfF65'
 
 export const contractInterface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"statfbility":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]'
 
-async function getRoom (contract, number) {
+async function getRoom(contract, number) {
   return contract.methods.rooms(number).call()
 }
 
-export async function loadRooms (contract) {
+export async function loadRooms(contract) {
   const rooms = []
   for (let i = 0; i < Infinity; i++) {
     console.log(i)
@@ -91,8 +91,19 @@ export async function loadRooms (contract) {
   return rooms
 }
 
-export async function createRoom (contract, accounts) {
+export async function createRoom(contract, accounts) {
   contract.methods.createRoom().send({ from: accounts[0] })
+    .on('receipt', (receipt) => {
+      console.log(receipt.events.returnValues)
+    })
+    .on('error', (error) => {
+      console.log(error)
+    })
+}
+
+
+export async function joinRoom(contract, accounts) {
+  contract.methods.joinRoom().send({ from: accounts[0] })
     .on('receipt', (receipt) => {
       console.log(receipt.events.returnValues)
     })

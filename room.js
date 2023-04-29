@@ -1,5 +1,5 @@
 import {
-  loadRoom,
+  loadRooms,
   connected,
   setupNetwork,
   contractInterface,
@@ -21,7 +21,7 @@ class App extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     // check metamask connection (connect if needed)
     const web3 = await connected()
     if (web3) {
@@ -29,7 +29,10 @@ class App extends Component {
 
       // eslint-disable-next-line no-undef
       const accounts = await ethereum.request({ method: 'eth_accounts' })
-      const contract = new web3.eth.Contract(JSON.parse(contractInterface), contractAddress)
+      const contract = new web3.eth.Contract(
+        JSON.parse(contractInterface),
+        contractAddress
+      )
 
       // get the room number from the URL
       const roomId = window.location.hash.replace('#', '')
@@ -38,7 +41,7 @@ class App extends Component {
       }
 
       // get rooms from the smart contract
-      const rooms = await loadRoom(contract)
+      const rooms = await loadRooms(contract)
       console.log(rooms)
 
       // set state
@@ -49,47 +52,43 @@ class App extends Component {
   // <button class="btn btn-primary" onclick=${this.joinRoom}>Join Room</button>
 
   joinRoom = async () => {
-    const { blockchain: { accounts, contract } } = this.state
+    const {
+      blockchain: { accounts, contract }
+    } = this.state
     await joinRoom(contract, accounts)
-    const room = await loadRoom(contract)
+    const room = await loadRooms(contract)
     this.setState({ room })
   }
 
-  render (_, { room }) {
+  render(_, { room }) {
     return html`
-        <div class="container p-1">
-          <header class="mb-4">
-              <h1>Blockchained Tic-Tac-Toe</h1>
-          </header>
-  
-          <${Board} room=${room} />
-        </div>
-        `
+      <div class="container p-1">
+        <header class="mb-4">
+          <h1>Blockchained Tic-Tac-Toe</h1>
+        </header>
+
+        <${Board} room=${room} />
+      </div>
+    `
   }
 }
 
 class Board extends Component {
-  render ({ room }) {
+  render({ room }) {
     return html`
-        <div class="board">
-            <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4"></div>
-            <div class="col-4"></div>
-            </div>
-            <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4"></div>
-            <div class="col-4"></div>
-            </div>
-            <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4"></div>
-            <div class="col-4"></div>
-            </div>
-        </div>
-        `
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+  </div>
+    `
   }
 }
 
-render(html`<${App}/>`, document.body)
+render(html`<${App} />`, document.body)
