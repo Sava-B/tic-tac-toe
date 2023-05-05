@@ -11,8 +11,10 @@ import {
   render,
   Component
 } from 'https://unpkg.com/htm/preact/standalone.module.js'
+import Game from './gameBoard.js'
 
 class App extends Component {
+
   state = {
     room: {},
     blockchain: {
@@ -76,17 +78,18 @@ class App extends Component {
 class Board extends Component {
   render({ room }) {
     return html`
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-  </div>
+  //   <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  //   <div style="border: 1px solid black;"></div>
+  // </div>
+  <Board></Board>
     `
   }
 }
