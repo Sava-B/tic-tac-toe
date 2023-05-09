@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 contract TicTacToe {
+
     constructor() {
         createWinningCases();
     }
@@ -41,13 +42,14 @@ contract TicTacToe {
         address winner;
         bool isGameFinished;
     }
+    
     Room[] public rooms; // contract.methods.rooms() -> []Room
 
     int8 private constant EMPTY_MOVE = 3;
     int8 private constant O_MOVE = 0;
     int8 private constant X_MOVE = 1;
 
-    int8[9] private emptyBoard = [EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE];
+    int8[9] public emptyBoard = [EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE];
 
     event RoomCreation (
         uint256 roomNumber
@@ -64,7 +66,7 @@ contract TicTacToe {
     }
 
     function hasWinner(uint8 roomIndex) public view returns (address) {
-        for (uint i = 0; i < winningCases.length; i++) {
+        for (uint32 i = 0; i < winningCases.length; i++) {
             WinningCase memory currentCase = winningCases[i];
             uint firstIndex = currentCase.firstIndex;
             uint secondIndex = currentCase.secondIndex;
@@ -76,8 +78,6 @@ contract TicTacToe {
                     return rooms[roomIndex].playerO;
                 } 
                 return rooms[roomIndex].playerX;
-            } else {
-                return address(0);
             }
         }
         return address(0);

@@ -51,12 +51,6 @@ class App extends Component {
     }
   }
 
-  Square = async ({ value, onSquareClick }) =>  {
-    return html`
-    <button class="square" onClick={onSquareClick}>{value}</button>
-`
-    
-}
 
   // <button class="btn btn-primary" onclick=${this.joinRoom}>Join Room</button>
 
@@ -85,17 +79,17 @@ class App extends Component {
 class Board extends Component {
   render({ room }) {
     return html`
-    <Square style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
-    <Square style="border: 1px solid black;", value={squares[0]}></Square>
-    <Square style="border: 1px solid black;", value={squares[1]}></Square>
-    <Square style="border: 1px solid black;", value={squares[2]}></Square>
-    <Square style="border: 1px solid black;", value={squares[3]}></Square>
-    <Square style="border: 1px solid black;", value={squares[4]}></Square>
-    <Square style="border: 1px solid black;", value={squares[5]}></Square>
-    <Square style="border: 1px solid black;", value={squares[6]}></Square>
-    <Square style="border: 1px solid black;" value={squares[7]}></Square>
-    <Square style="border: 1px solid black;" value={squares[8]}></Square>
-  </Square>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;"></div>
+  </div>
   <Board></Board>
     `
   }

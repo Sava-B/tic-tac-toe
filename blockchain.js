@@ -111,3 +111,13 @@ export async function joinRoom(contract, accounts) {
       console.log(error)
     })
 }
+
+export async function hasWinner(contract, accounts) {
+  contract.methods.hasWinner.send({ from: accounts[0] })
+    .on('receipt', (receipt) => {
+      console.log(receipt.events.returnValues)
+    })
+    .on('error', (error) => {
+      console.log(error)
+    })
+}
