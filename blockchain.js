@@ -113,7 +113,27 @@ export async function joinRoom(contract, accounts) {
 }
 
 export async function hasWinner(contract, accounts) {
-  contract.methods.hasWinner.send({ from: accounts[0] })
+  contract.methods.hasWinner.call({ from: accounts[0] })
+    .on('receipt', (receipt) => {
+      console.log(receipt.events.returnValues)
+    })
+    .on('error', (error) => {
+      console.log(error)
+    })
+}
+
+export async function isBoardFull(contract, accounts) {
+  contract.methods.isBoardFull.call({ from: accounts[0] })
+    .on('receipt', (receipt) => {
+      console.log(receipt.events.returnValues)
+    })
+    .on('error', (error) => {
+      console.log(error)
+    })
+}
+
+export async function makeMove(contract, accounts, index) {
+  contract.methods.makeMove(index).send({ from: accounts[0] })
     .on('receipt', (receipt) => {
       console.log(receipt.events.returnValues)
     })
