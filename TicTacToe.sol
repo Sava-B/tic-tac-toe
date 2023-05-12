@@ -49,7 +49,7 @@ contract TicTacToe {
     int8 private constant O_MOVE = 0;
     int8 private constant X_MOVE = 1;
 
-    int8[9] public emptyBoard = [EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE];
+    int8[9] private emptyBoard = [EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE];
 
     event RoomCreation (
         uint256 roomNumber
@@ -113,5 +113,9 @@ contract TicTacToe {
         } else if (isBoardFull(roomNumber)) {
             rooms[roomNumber].isGameFinished = true;
         }
+    }
+
+    function showBoard() external view returns (uint8[9] memory) {
+        return uint8[9];
     }
 }

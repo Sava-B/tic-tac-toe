@@ -81,7 +81,8 @@ class App extends Component {
 class Board extends Component {
   render({ room }) {
     return html`
-    <div>Room: ${room.id}</div>
+    <h2>Room: ${window.location.hash.replace('#', '')}</h2>
+    <h2>Number of squares: ${}</h2>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>
