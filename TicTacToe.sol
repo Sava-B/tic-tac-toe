@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 contract TicTacToe {
-
     constructor() {
         createWinningCases();
     }
@@ -42,21 +41,37 @@ contract TicTacToe {
         address winner;
         bool isGameFinished;
     }
-    
+
     Room[] public rooms; // contract.methods.rooms() -> []Room
 
     int8 private constant EMPTY_MOVE = 3;
     int8 private constant O_MOVE = 0;
     int8 private constant X_MOVE = 1;
 
-    int8[9] private emptyBoard = [EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE, EMPTY_MOVE];
+    int8[9] private emptyBoard = [
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE,
+        EMPTY_MOVE
+    ];
 
-    event RoomCreation (
-        uint256 roomNumber
-    );
+    event RoomCreation(uint256 roomNumber);
+
     function createRoom() public {
         int8[9] memory board = int8[9](emptyBoard);
-        Room memory room = Room(msg.sender, msg.sender, address(0), board, address(0), false);
+        Room memory room = Room(
+            msg.sender,
+            msg.sender,
+            address(0),
+            board,
+            address(0),
+            false
+        );
         rooms.push(room);
         emit RoomCreation(rooms.length - 1);
     }
@@ -71,22 +86,26 @@ contract TicTacToe {
             uint firstIndex = currentCase.firstIndex;
             uint secondIndex = currentCase.secondIndex;
             uint thirdIndex = currentCase.thirdIndex;
-            if (rooms[roomIndex].board[firstIndex] == rooms[roomIndex].board[secondIndex] 
-            && rooms[roomIndex].board[secondIndex] == rooms[roomIndex].board[thirdIndex] 
-            && rooms[roomIndex].board[firstIndex] != EMPTY_MOVE) {
+            if (
+                rooms[roomIndex].board[firstIndex] ==
+                rooms[roomIndex].board[secondIndex] &&
+                rooms[roomIndex].board[secondIndex] ==
+                rooms[roomIndex].board[thirdIndex] &&
+                rooms[roomIndex].board[firstIndex] != EMPTY_MOVE
+            ) {
                 if (currentCase.firstIndex == 0) {
                     return rooms[roomIndex].playerO;
-                } 
+                }
                 return rooms[roomIndex].playerX;
             }
         }
         return address(0);
     }
-    
+
     function isBoardFull(uint256 roomNumber) private view returns (bool) {
         int8[9] memory board = rooms[roomNumber].board;
-        for (uint i = 0; i < board.length ; i++){
-            if (board[i] == EMPTY_MOVE){
+        for (uint i = 0; i < board.length; i++) {
+            if (board[i] == EMPTY_MOVE) {
                 return false;
             }
         }
@@ -94,11 +113,26 @@ contract TicTacToe {
     }
 
     function makeMove(uint8 index, uint256 roomNumber) public {
-        require(rooms.length == (index-1), "The room with corresponding number doesn't exist.");
-        require(rooms[roomNumber].playerX != address(0), "Player X hasn't joined yet.");        
-        require(rooms[roomNumber].currentPlayer == msg.sender, "It's not your turn.");
-        require(rooms[roomNumber].board[index] == EMPTY_MOVE, "This square is taken.");
-        require(rooms[roomNumber].isGameFinished, "The board is full, game's finished.");
+        require(
+            rooms.length == (index - 1),
+            "The room with corresponding number doesn't exist."
+        );
+        require(
+            rooms[roomNumber].playerX != address(0),
+            "Player X hasn't joined yet."
+        );
+        require(
+            rooms[roomNumber].currentPlayer == msg.sender,
+            "It's not your turn."
+        );
+        require(
+            rooms[roomNumber].board[index] == EMPTY_MOVE,
+            "This square is taken."
+        );
+        require(
+            rooms[roomNumber].isGameFinished,
+            "The board is full, game's finished."
+        );
 
         if (msg.sender == rooms[roomNumber].playerX) {
             rooms[roomNumber].board[index] = X_MOVE;
@@ -116,6 +150,6 @@ contract TicTacToe {
     }
 
     function showBoard() external view returns (uint8[9] memory) {
-        return uint8[9];
+        return board;
     }
 }
