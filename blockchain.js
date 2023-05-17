@@ -113,7 +113,7 @@ export async function joinRoom(contract, accounts) {
 }
 
 export async function hasWinner(contract, accounts) {
-  contract.methods.hasWinner.call({ from: accounts[0] })
+  const result = await contract.methods.hasWinner.call({ from: accounts[0] })
     .on('receipt', (receipt) => {
       console.log(receipt.events.returnValues)
     })
@@ -142,7 +142,7 @@ export async function makeMove(contract, accounts, index) {
     })
 }
 
-export async function showBoard(contract, accounts, index) {
+export async function showBoard(contract, accounts) {
   contract.methods.showBoard(index).send({ from: accounts[0] })
     .on('receipt', (receipt) => {
       console.log(receipt.events.returnValues)
