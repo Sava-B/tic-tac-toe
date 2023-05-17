@@ -7,7 +7,8 @@ import {
   joinRoom,
   hasWinner,
   makeMove,
-  isBoardFull
+  isBoardFull,
+  showBoard
 } from './blockchain.js'
 import {
   html,
@@ -25,13 +26,14 @@ class App extends Component {
     }
   }
 
+
   async componentDidMount() {
     // check metamask connection (connect if needed)
     const web3 = await connected()
+    console.log('the version of web3.js: ', web3.version)
     if (web3) {
       setupNetwork(1)
 
-      // eslint-disable-next-line no-undef
       const accounts = await ethereum.request({ method: 'eth_accounts' })
       const contract = new web3.eth.Contract(
         JSON.parse(contractInterface),
@@ -65,6 +67,13 @@ class App extends Component {
     this.setState({ room })
   }
 
+  showBoard = async () => {
+    const {
+      blockchain: { accounts, contract }
+    } = this.state
+    await showBoard(contract, accounts)
+  }
+
   render(_, { room }) {
     return html`
       <div class="container p-1">
@@ -87,7 +96,8 @@ class Board extends Component {
   render(_, { room }) {
     return html`
     <h2>Room: ${window.location.hash.replace('#', '')}</h2>
-    <h2>Number of squares: ${this.loadBoard()}</h2>
+    <h2>Number of squares: ${showBoard(0).length}</h2>
+    ${console.log(showBoard[0])}
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>

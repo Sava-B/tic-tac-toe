@@ -141,3 +141,13 @@ export async function makeMove(contract, accounts, index) {
       console.log(error)
     })
 }
+
+export async function showBoard(contract, accounts, index) {
+  contract.methods.showBoard(index).send({ from: accounts[0] })
+    .on('receipt', (receipt) => {
+      console.log(receipt.events.returnValues)
+    })
+    .on('error', (error) => {
+      console.log(error)
+    })
+}

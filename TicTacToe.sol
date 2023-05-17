@@ -149,7 +149,7 @@ contract TicTacToe {
         }
     }
 
-    function showBoard() external view returns (uint8[9] memory) {
-        return board;
+    function showBoard(uint8 room) external view returns (int8[9] memory) {
+        return rooms[room].board;
     }
 }
