@@ -39,6 +39,7 @@ class App extends Component {
         JSON.parse(contractInterface),
         contractAddress
       )
+      console.log('Contract.Methods: ', contract.methods.hasWinner(0).call((err, result) => { return result }))
 
       // get the room number from the URL
       const roomId = window.location.hash.replace('#', '')

@@ -148,8 +148,4 @@ contract TicTacToe {
             rooms[roomNumber].isGameFinished = true;
         }
     }
-
-    function showBoard(uint8 room) external view returns (int8[9] memory) {
-        return rooms[room].board;
-    }
 }
