@@ -71,6 +71,7 @@ class App extends Component {
     const {
       blockchain: { accounts, contract, move }
     } = this.state
+    console.log('this.state', this.state)
     await makeMove(contract, accounts, move)
   }
 
@@ -99,9 +100,8 @@ class Board extends Component {
     return html`
     <h2>Room: ${window.location.hash.replace('#', '')}</h2>
     <h2>Number of squares: ${makeMove().index}</h2>
-    
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
-    <div style="border: 1px solid black;"></div>
+    <div style="border: 1px solid black;" onClick=${() => { return makeMove() }}></div>
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>

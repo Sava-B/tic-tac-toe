@@ -66,9 +66,9 @@ export async function setupNetwork(networkId) {
   }
 }
 
-export const contractAddress = '0xa9C46541383fA83cb3f60c1441896C564bebfF65'
+export const contractAddress = '0xCD599599eDAD7Ed41688ef9513cB8f8C507Be051'
 
-export const contractInterface = '[{"inputs":[],"name":"createRoom","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"statfbility":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"joinRoom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"index","type":"uint8"},{"internalType":"uint256","name":"roomNumber","type":"uint256"}],"name":"makeMove","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"uint8","name":"roomIndex","type":"uint8"}],"name":"hasWinner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"rooms","outputs":[{"internalType":"address","name":"currentPlayer","type":"address"},{"internalType":"address","name":"playerO","type":"address"},{"internalType":"address","name":"playerX","type":"address"},{"internalType":"address","name":"winner","type":"address"},{"internalType":"bool","name":"isGameFinished","type":"bool"}],"stateMutability":"view","type":"function"}]'
+export const contractInterface = '[ { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "RoomCreation", "type": "event" }, { "inputs": [], "name": "createRoom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint8", "name": "roomIndex", "type": "uint8" } ], "name": "hasWinner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "joinRoom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint8", "name": "index", "type": "uint8" }, { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "makeMove", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "rooms", "outputs": [ { "internalType": "address", "name": "currentPlayer", "type": "address" }, { "internalType": "address", "name": "playerO", "type": "address" }, { "internalType": "address", "name": "playerX", "type": "address" }, { "internalType": "address", "name": "winner", "type": "address" }, { "internalType": "bool", "name": "isGameFinished", "type": "bool" } ], "stateMutability": "view", "type": "function" } ]'
 
 async function getRoom(contract, number) {
   return contract.methods.rooms(number).call()
@@ -133,7 +133,6 @@ export async function isBoardFull(contract, accounts) {
 }
 
 export async function makeMove(contract, accounts, index) {
-  // console.log(contract.methods)
   contract.methods.makeMove(index).send({ from: accounts[0] })
     .on('receipt', (receipt) => {
       console.log(receipt.events.returnValues)
