@@ -24,7 +24,7 @@ class App extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     // check metamask connection (connect if needed)
     const web3 = await connected()
     console.log('the version of web3.js: ', web3.version)
@@ -36,13 +36,17 @@ class App extends Component {
         JSON.parse(contractInterface),
         contractAddress
       )
-      console.log('Contract.Methods: ', contract.methods.hasWinner(0).call((err, result) => { return result }))
+      console.log('contract: ', contract)
+      console.log('Contract.Methods: ', await contract.methods.hasWinner(0).call((err, result) => { return result }))
 
       // get the room number from the URL
       const roomId = window.location.hash.replace('#', '')
+      console.log('roomId: ', roomId)
       if (roomId === '') {
+        alert('Room is Empty!')
         return
       }
+
 
       // get rooms from the smart contract
       const rooms = await loadRooms(contract)
@@ -50,6 +54,7 @@ class App extends Component {
 
       // set state
       this.setState({ rooms, blockchain: { accounts, contract } })
+      console.log('State: ', this.state)
     }
   }
 
@@ -64,40 +69,42 @@ class App extends Component {
     this.setState({ room })
   }
 
-  makeMove = async () => {
+  madeMove = async () => {
     const {
-      blockchain: { accounts, contract, move }
+      blockchain: { accounts, contract, index }
     } = this.state
     console.log('this.state', this.state)
-    await makeMove(contract, accounts, move)
+    console.log('contract methods', contract.methods)
+    await makeMove(contract, accounts, index)
+
   }
 
-  render (_, { room }) {
+  render(_, { room }) {
     return html`
       <div class="container p-1">
         <header class="mb-4">
           <h1>Blockchained Tic-Tac-Toe</h1>
         </header>
 
-        <${Board} makeMove=${makeMove} room=${room} />
+        <${Board} madeMove=${this.madeMove} room=${room} />
       </div>
     `
   }
 }
 
 class Board extends Component {
-  loadBoard () {
+  loadBoard() {
     const numSquares = 9
     return numSquares
   }
 
   // ${ console.log(contract.methods) }
-  render (_, { room, makeMove }) {
+  render({ madeMove }, { room }) {
     return html`
     <h2>Room: ${window.location.hash.replace('#', '')}</h2>
-    <h2>Number of squares: ${makeMove().index}</h2>
+    <h2>Number of squares: ${madeMove().index}</h2>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
-    <div style="border: 1px solid black;" onClick=${() => { return makeMove() }}></div>
+    <div style="border: 1px solid black;" onClick=${() => { return madeMove() }}></div>
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>
