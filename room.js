@@ -7,7 +7,7 @@ import {
   joinRoom,
   hasWinner,
   makeMove,
-  isBoardFull,
+  isBoardFull
 } from './blockchain.js'
 import {
   html,
@@ -16,7 +16,6 @@ import {
 } from 'https://unpkg.com/htm/preact/standalone.module.js'
 
 class App extends Component {
-
   state = {
     room: {},
     blockchain: {
@@ -25,8 +24,7 @@ class App extends Component {
     }
   }
 
-
-  async componentDidMount() {
+  async componentDidMount () {
     // check metamask connection (connect if needed)
     const web3 = await connected()
     console.log('the version of web3.js: ', web3.version)
@@ -55,7 +53,6 @@ class App extends Component {
     }
   }
 
-
   // <button class="btn btn-primary" onclick=${this.joinRoom}>Join Room</button>
 
   joinRoom = async () => {
@@ -75,28 +72,27 @@ class App extends Component {
     await makeMove(contract, accounts, move)
   }
 
-
-
-  render(_, { room }) {
+  render (_, { room }) {
     return html`
       <div class="container p-1">
         <header class="mb-4">
           <h1>Blockchained Tic-Tac-Toe</h1>
         </header>
 
-        <${Board} room=${room} />
+        <${Board} makeMove=${makeMove} room=${room} />
       </div>
     `
   }
 }
 
 class Board extends Component {
-  loadBoard() {
-    const numSquares = 9;
+  loadBoard () {
+    const numSquares = 9
     return numSquares
   }
+
   // ${ console.log(contract.methods) }
-  render(_, { room }) {
+  render (_, { room, makeMove }) {
     return html`
     <h2>Room: ${window.location.hash.replace('#', '')}</h2>
     <h2>Number of squares: ${makeMove().index}</h2>
