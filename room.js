@@ -8,7 +8,6 @@ import {
   hasWinner,
   makeMove,
   isBoardFull,
-  showBoard
 } from './blockchain.js'
 import {
   html,
@@ -68,12 +67,14 @@ class App extends Component {
     this.setState({ room })
   }
 
-  showBoard = async () => {
+  makeMove = async () => {
     const {
-      blockchain: { accounts, contract }
+      blockchain: { accounts, contract, move }
     } = this.state
-    await showBoard(contract, accounts)
+    await makeMove(contract, accounts, move)
   }
+
+
 
   render(_, { room }) {
     return html`
@@ -93,12 +94,12 @@ class Board extends Component {
     const numSquares = 9;
     return numSquares
   }
-
+  // ${ console.log(contract.methods) }
   render(_, { room }) {
     return html`
     <h2>Room: ${window.location.hash.replace('#', '')}</h2>
-    <h2>Number of squares: ${showBoard(0).length}</h2>
-    ${console.log(showBoard[0])}
+    <h2>Number of squares: ${makeMove().index}</h2>
+    
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
     <div style="border: 1px solid black;"></div>
     <div style="border: 1px solid black;"></div>

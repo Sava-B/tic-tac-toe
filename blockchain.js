@@ -133,6 +133,7 @@ export async function isBoardFull(contract, accounts) {
 }
 
 export async function makeMove(contract, accounts, index) {
+  // console.log(contract.methods)
   contract.methods.makeMove(index).send({ from: accounts[0] })
     .on('receipt', (receipt) => {
       console.log(receipt.events.returnValues)
@@ -142,12 +143,3 @@ export async function makeMove(contract, accounts, index) {
     })
 }
 
-export async function showBoard(contract, accounts) {
-  contract.methods.showBoard(index).send({ from: accounts[0] })
-    .on('receipt', (receipt) => {
-      console.log(receipt.events.returnValues)
-    })
-    .on('error', (error) => {
-      console.log(error)
-    })
-}
