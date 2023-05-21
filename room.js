@@ -27,7 +27,6 @@ class App extends Component {
   async componentDidMount() {
     // check metamask connection (connect if needed)
     const web3 = await connected()
-    console.log('the version of web3.js: ', web3.version)
     if (web3) {
       setupNetwork(1)
 
@@ -67,16 +66,21 @@ class App extends Component {
     await joinRoom(contract, accounts)
     const room = await loadRooms(contract)
     this.setState({ room })
+    console.log('Room:', room)
+
   }
 
-  madeMove = async () => {
+  madeMove = async (moveIndex) => {
     const {
-      blockchain: { accounts, contract, index }
+      blockchain: { accounts, contract }
     } = this.state
-    console.log('this.state', this.state)
-    console.log('contract methods', contract.methods)
-    await makeMove(contract, accounts, index)
+    const roomIndex = 0
+    const squareIndex = 1
 
+    console.log('this.state', this.state)
+    // console.log('contract methods', contract.methods)
+
+    await makeMove(contract, accounts, moveIndex, roomIndex)
   }
 
   render(_, { room }) {
@@ -93,30 +97,54 @@ class App extends Component {
 }
 
 class Board extends Component {
+
   loadBoard() {
     const numSquares = 9
     return numSquares
   }
 
-  // ${ console.log(contract.methods) }
+  handleClick = () => {
+    console.log(room)
+    madeMove(1)
+  }
+
+  // ${console.log(contract.methods)}
   render({ madeMove }, { room }) {
     return html`
-    <h2>Room: ${window.location.hash.replace('#', '')}</h2>
+    <h2> Room: ${window.location.hash.replace('#', '')}</h2>
     <h2>Number of squares: ${madeMove().index}</h2>
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;">
-    <div style="border: 1px solid black;" onClick=${() => { return madeMove() }}></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>    
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
-    <div style="border: 1px solid black;"></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>    
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
+      <div style="border: 1px solid black;" onClick=${() => {
+        this.handleClick()
+      }}></div>
   </div>
-  <Board></Board>
-    `
+
+`
   }
 }
 
-render(html`<${App} />`, document.body)
+render(html`<${App}/>`, document.body)
