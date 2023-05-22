@@ -97,27 +97,27 @@ class App extends Component {
           <h1>Blockchained Tic-Tac-Toe</h1>
         </header>
 
-        <${Board} madeMove=${this.madeMove} room=${room} />
+        <${Board} madeMove=${this.madeMove()} room=${room} />
       </div>
     `;
   }
 }
 
 class Board extends Component {
-  constructor() {
-    super();
-    const [boardState, setBoardState] = useState([
-      EMPTY,
-      EMPTY,
-      EMPTY,
-      EMPTY,
-      EMPTY,
-      EMPTY,
-      EMPTY,
-      EMPTY,
-      EMPTY,
-    ]);
-  }
+  // constructor() {
+  //   super();
+  //   const [boardState, setBoardState] = useState([
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //     EMPTY,
+  //   ]);
+  // }
 
   loadBoard() {
     const numSquares = 9;
@@ -125,7 +125,7 @@ class Board extends Component {
   }
 
   handleClick = () => {
-    console.log(room);
+    console.log("something");
     madeMove(1);
   };
 
