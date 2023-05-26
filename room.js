@@ -4,7 +4,9 @@ import {
   setupNetwork,
   contractInterface,
   contractAddress,
-  getBoard
+  getBoard,
+  makeMove,
+  joinRoom
 } from './blockchain.js'
 import {
   html,
@@ -54,7 +56,21 @@ class App extends Component {
     }
   }
 
-  render (_, { room }) {
+  makeMove = async (squareIndex) => {
+    const { blockchain: { accounts, contract } } = this.state
+    await makeMove(contract, accounts, squareIndex, window.location.hash.replace('#', ''))
+    const rooms = await loadRooms(contract)
+    this.setState({ rooms })
+  }
+
+  joinRoom = async () => {
+    const { blockchain: { accounts, contract } } = this.state
+    await joinRoom(contract, accounts, window.location.hash.replace('#', ''))
+    const rooms = await loadRooms(contract)
+    this.setState({ rooms })
+  }
+
+  render (_, { room, blockchain: { accounts } }) {
     console.log('Room', JSON.stringify(room, null, 2))
 
     return html`
@@ -65,6 +81,18 @@ class App extends Component {
 
         <h2>Room: ${window.location.hash.replace('#', '')}</h2>
         <p>${room.playerO} v. ${room.playerY}</p>
+        ${room.playerO === '0x0000000000000000000000000000000000000000'
+          ? html`
+            <button class="btn btn-primary mb-3" onclick=${this.joinRoom}>Join Room</button>
+          `
+          : ''
+        }
+        ${room.playerX === '0x0000000000000000000000000000000000000000'
+          ? html`
+            <button class="btn btn-primary mb-3" onclick=${this.joinRoom}>Join Room</button>
+          `
+          : ''
+        }
 
         <div
           style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;"
@@ -73,16 +101,19 @@ class App extends Component {
             <div
               style="border: 1px solid black; text-align: center; font-size: 3rem; line-height: 90px;"
               onClick=${() => {
-                if (room.currentPlayer === room.playerX) {
+                console.log(room)
+                if (room.currentPlayer.toLowerCase() === accounts[0]) {
                   this.makeMove(index)
+                  // TODO: disable click
+                  // TODO: update board
                 }
               }}
             >${
-              move === 0
+              move === '3'
                 ? ''
-                : move === 1
-                  ? 'X'
-                  : 'O'
+                : move === '0'
+                  ? 'O'
+                  : 'X'
             }</div>
           `)
         }
