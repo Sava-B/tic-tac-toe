@@ -4,196 +4,92 @@ import {
   setupNetwork,
   contractInterface,
   contractAddress,
-  joinRoom,
-  hasWinner,
-  makeMove,
-  isBoardFull,
-} from "./blockchain.js";
+  getBoard
+} from './blockchain.js'
 import {
   html,
   render,
-  Component,
-} from "https://unpkg.com/htm/preact/standalone.module.js";
+  Component
+} from 'https://unpkg.com/htm/preact/standalone.module.js'
 
 class App extends Component {
   state = {
-    room: {},
+    room: {
+      board: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      currentPlayer: null,
+      playerO: null,
+      playerX: null,
+      winner: null,
+      isGameFinished: false,
+      id: null
+    },
     blockchain: {
       accounts: [],
-      contract: null,
-    },
-  };
-
-  async componentDidMount() {
-    // check metamask connection (connect if needed)
-    const web3 = await connected();
-    if (web3) {
-      setupNetwork(1);
-
-      const accounts = await ethereum.request({ method: "eth_accounts" });
-      const contract = new web3.eth.Contract(
-        JSON.parse(contractInterface),
-        contractAddress
-      );
-      console.log("contract: ", contract);
-      console.log(
-        "Contract.Methods: ",
-        await contract.methods.hasWinner(0).call((err, result) => {
-          return result;
-        })
-      );
-
-      // get the room number from the URL
-      const roomId = window.location.hash.replace("#", "");
-      console.log("roomId: ", roomId);
-      if (roomId === "") {
-        alert("Room is Empty!");
-        return;
-      }
-
-      // get rooms from the smart contract
-      const rooms = await loadRooms(contract);
-      console.log(rooms);
-
-      // set state
-      this.setState({ rooms, blockchain: { accounts, contract } });
-      console.log("State: ", this.state);
+      contract: null
     }
   }
 
-  // <button class="btn btn-primary" onclick=${this.joinRoom}>Join Room</button>
+  async componentDidMount () {
+    const web3 = await connected()
+    if (web3) {
+      setupNetwork(web3, 1)
 
-  joinRoom = async () => {
-    const {
-      blockchain: { accounts, contract },
-    } = this.state;
-    await joinRoom(contract, accounts);
-    const room = await loadRooms(contract);
-    this.setState({ room });
-    console.log("Room:", room);
-  };
+      // eslint-disable-next-line no-undef
+      const accounts = await ethereum.request({ method: 'eth_accounts' })
+      const contract = new web3.eth.Contract(JSON.parse(contractInterface), contractAddress)
 
-  // Get the room index and the move from the user
-  // Call the function makeMove passing the info the user gave
-  // Wait for the transaction to be submitted, processed, and included in a block
-  // The update the UI with a success message or info
+      const roomId = window.location.hash.replace('#', '')
+      if (roomId === '') {
+        alert('Room is Empty!')
+        return
+      }
 
-  madeMove = async (moveIndex) => {
-    const {
-      blockchain: { accounts, contract },
-    } = this.state;
-    const roomIndex = window.location.hash.replace("#", "");
+      const rooms = await loadRooms(contract)
+      console.log('Rooms', rooms)
+      const room = rooms[roomId]
+      const board = await getBoard(contract, accounts, roomId)
 
-    console.log("this.state", this.state);
-    // console.log('contract methods', contract.methods)
+      this.setState({ room, blockchain: { accounts, contract } })
+      this.setState({ room: { ...room, board } })
+    }
+  }
 
-    await makeMove(contract, accounts, moveIndex, roomIndex);
-  };
+  render (_, { room }) {
+    console.log('Room', JSON.stringify(room, null, 2))
 
-  render(_, { room }) {
     return html`
       <div class="container p-1">
         <header class="mb-4">
           <h1>Blockchained Tic-Tac-Toe</h1>
         </header>
 
-        <${Board} madeMove=${this.madeMove()} room=${room} />
+        <h2>Room: ${window.location.hash.replace('#', '')}</h2>
+        <p>${room.playerO} v. ${room.playerY}</p>
+
+        <div
+          style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;"
+        >
+        ${room.board.map((move, index) => html`
+            <div
+              style="border: 1px solid black; text-align: center; font-size: 3rem; line-height: 90px;"
+              onClick=${() => {
+                if (room.currentPlayer === room.playerX) {
+                  this.makeMove(index)
+                }
+              }}
+            >${
+              move === 0
+                ? ''
+                : move === 1
+                  ? 'X'
+                  : 'O'
+            }</div>
+          `)
+        }
+        </div>
       </div>
-    `;
+    `
   }
 }
 
-class Board extends Component {
-  // constructor() {
-  //   super();
-  //   const [boardState, setBoardState] = useState([
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //     EMPTY,
-  //   ]);
-  // }
-
-  loadBoard() {
-    const numSquares = 9;
-    return numSquares;
-  }
-
-  handleClick = () => {
-    console.log("something");
-    madeMove(1);
-  };
-
-  // ${console.log(contract.methods)}
-  render({ madeMove }, { room }) {
-    return html`
-      <h2>Room: ${window.location.hash.replace("#", "")}</h2>
-      <h2>Number of squares: ${madeMove().index}</h2>
-      <div
-        style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;"
-      >
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-        <div
-          style="border: 1px solid black;"
-          onClick=${() => {
-            this.handleClick();
-          }}
-        ></div>
-      </div>
-    `;
-  }
-}
-
-render(html`<${App} />`, document.body);
+render(html`<${App} />`, document.body)

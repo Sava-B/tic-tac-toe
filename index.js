@@ -25,7 +25,7 @@ class App extends Component {
     // check metamask connection (connect if needed)
     const web3 = await connected()
     if (web3) {
-      setupNetwork(1)
+      setupNetwork(web3, 1)
 
       // eslint-disable-next-line no-undef
       const accounts = await ethereum.request({ method: 'eth_accounts' })

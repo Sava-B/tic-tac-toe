@@ -80,6 +80,14 @@ contract TicTacToe {
         rooms[roomNumber].playerX = msg.sender;
     }
 
+//     function getSources(uint transactionId) external returns (uint[] memory sources) {
+//       sources = transactions[transactionId].sources; // In case you have array of transactions
+//     }
+
+    function getBoard(uint256 roomNumber) public view returns (int8[9] memory board) {
+        board = rooms[roomNumber].board;
+    }
+
     function hasWinner(uint8 roomIndex) public view returns (address) {
         for (uint32 i = 0; i < winningCases.length; i++) {
             WinningCase memory currentCase = winningCases[i];
