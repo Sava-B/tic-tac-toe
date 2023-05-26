@@ -80,7 +80,7 @@ class App extends Component {
         </header>
 
         <h2>Room: ${window.location.hash.replace('#', '')}</h2>
-        <p>${room.playerO} v. ${room.playerY}</p>
+        <p>${room.playerO} v. ${room.playerX}</p>
         ${room.playerO === '0x0000000000000000000000000000000000000000'
           ? html`
             <button class="btn btn-primary mb-3" onclick=${this.joinRoom}>Join Room</button>
@@ -113,7 +113,9 @@ class App extends Component {
                 ? ''
                 : move === '0'
                   ? 'O'
-                  : 'X'
+                : move === '1'
+                  ? 'X'
+                : ''
             }</div>
           `)
         }
