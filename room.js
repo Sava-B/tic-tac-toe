@@ -31,7 +31,7 @@ class App extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const web3 = await connected()
     if (web3) {
       setupNetwork(web3, 1)
@@ -70,7 +70,7 @@ class App extends Component {
     this.setState({ rooms })
   }
 
-  render (_, { room, blockchain: { accounts } }) {
+  render(_, { room, blockchain: { accounts } }) {
     console.log('Room', JSON.stringify(room, null, 2))
 
     return html`
@@ -82,17 +82,17 @@ class App extends Component {
         <h2>Room: ${window.location.hash.replace('#', '')}</h2>
         <p>${room.playerO} v. ${room.playerX}</p>
         ${room.playerO === '0x0000000000000000000000000000000000000000'
-          ? html`
+        ? html`
             <button class="btn btn-primary mb-3" onclick=${this.joinRoom}>Join Room</button>
           `
-          : ''
-        }
+        : ''
+      }
         ${room.playerX === '0x0000000000000000000000000000000000000000'
-          ? html`
+        ? html`
             <button class="btn btn-primary mb-3" onclick=${this.joinRoom}>Join Room</button>
           `
-          : ''
-        }
+        : ''
+      }
 
         <div
           style="display: grid; grid-template-columns: repeat(3, 1fr); width: 300px; height: 300px; margin: 0 auto; border: 2px solid black;"
@@ -101,24 +101,23 @@ class App extends Component {
             <div
               style="border: 1px solid black; text-align: center; font-size: 3rem; line-height: 90px;"
               onClick=${() => {
-                console.log(room)
-                if (room.currentPlayer.toLowerCase() === accounts[0]) {
-                  this.makeMove(index)
-                  // TODO: disable click
-                  // TODO: update board
-                }
-              }}
-            >${
-              move === '3'
-                ? ''
-                : move === '0'
-                  ? 'O'
-                : move === '1'
-                  ? 'X'
-                : ''
-            }</div>
+          console.log(room)
+          if (room.currentPlayer.toLowerCase() === accounts[0]) {
+            this.makeMove(index)
+            // TODO: disable click
+            // TODO: update board
+          }
+        }}
+            >${move === '3'
+          ? ''
+          : move === '0'
+            ? 'O'
+            : move === '1'
+              ? 'X'
+              : ''
+        }</div>
           `)
-        }
+      }
         </div>
       </div>
     `

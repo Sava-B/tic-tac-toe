@@ -1,6 +1,6 @@
 import Web3 from 'https://cdn.esm.sh/v58/web3@1.6.1/es2021/web3.js'
 
-export async function connected () {
+export async function connected() {
   if (typeof web3 === 'undefined') {
     alert(
       "You don't have Wallet Extension in browser. Please install it and reload the page. You'll need to use a desktop computer."
@@ -43,7 +43,7 @@ const networks = [
   }
 ]
 
-export async function setupNetwork (web3, networkId) {
+export async function setupNetwork(web3, networkId) {
   const network = networks[networkId]
   console.log('Network', network)
 
@@ -54,7 +54,7 @@ export async function setupNetwork (web3, networkId) {
         method: 'wallet_addEthereumChain',
         params: [network]
       })
-    } catch {}
+    } catch { }
 
     await window.ethereum.request({
       method: 'wallet_switchEthereumChain',
@@ -63,15 +63,15 @@ export async function setupNetwork (web3, networkId) {
   }
 }
 
-export const contractAddress = '0x9324Fb644a4Dc49E55C60f269a8B5166f42b4336'
+export const contractAddress = '0x3b03f0951366ba202f8a447cd4951e27c59a8768fc322efed4b8a40df2576d9f'
 
-export const contractInterface = '[ { "inputs": [], "name": "createRoom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "joinRoom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint8", "name": "index", "type": "uint8" }, { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "makeMove", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "RoomCreation", "type": "event" }, { "inputs": [ { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "getBoard", "outputs": [ { "internalType": "int8[9]", "name": "board", "type": "int8[9]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint8", "name": "roomIndex", "type": "uint8" } ], "name": "hasWinner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "rooms", "outputs": [ { "internalType": "address", "name": "currentPlayer", "type": "address" }, { "internalType": "address", "name": "playerO", "type": "address" }, { "internalType": "address", "name": "playerX", "type": "address" }, { "internalType": "address", "name": "winner", "type": "address" }, { "internalType": "bool", "name": "isGameFinished", "type": "bool" } ], "stateMutability": "view", "type": "function" } ]'
+export const contractInterface = '[ { "inputs": [], "name": "GameIsFinished", "type": "error" }, { "inputs": [], "name": "NotYourTurn", "type": "error" }, { "inputs": [], "name": "PlayerXHasntJoined", "type": "error" }, { "inputs": [], "name": "RoomDoesntExist", "type": "error" }, { "inputs": [], "name": "SquareIsTaken", "type": "error" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "RoomCreation", "type": "event" }, { "inputs": [], "name": "createRoom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "getBoard", "outputs": [ { "internalType": "int8[9]", "name": "", "type": "int8[9]" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint8", "name": "roomIndex", "type": "uint8" } ], "name": "hasWinner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "joinRoom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint8", "name": "index", "type": "uint8" }, { "internalType": "uint256", "name": "roomNumber", "type": "uint256" } ], "name": "makeMove", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "uint256", "name": "", "type": "uint256" } ], "name": "rooms", "outputs": [ { "internalType": "address", "name": "currentPlayer", "type": "address" }, { "internalType": "address", "name": "playerO", "type": "address" }, { "internalType": "address", "name": "playerX", "type": "address" }, { "internalType": "address", "name": "winner", "type": "address" }, { "internalType": "bool", "name": "isGameFinished", "type": "bool" }, { "internalType": "uint8", "name": "movesMade", "type": "uint8" } ], "stateMutability": "view", "type": "function" } ]'
 
-function getRoom (contract, number) {
+function getRoom(contract, number) {
   return contract.methods.rooms(number).call()
 }
 
-export async function loadRooms (contract) {
+export async function loadRooms(contract) {
   const rooms = []
   for (let i = 0; i < Infinity; i++) {
     try {
@@ -87,32 +87,28 @@ export async function loadRooms (contract) {
   return rooms
 }
 
-export function createRoom (contract, accounts) {
+export function createRoom(contract, accounts) {
   return contract.methods
     .createRoom()
     .send({ from: accounts[0] })
 }
 
-export function joinRoom (contract, accounts, roomId) {
+export function joinRoom(contract, accounts, roomId) {
   return contract.methods
     .joinRoom(roomId)
     .send({ from: accounts[0] })
 }
 
-export function getBoard (contract, accounts, roomId) {
+export function getBoard(contract, accounts, roomId) {
   return contract.methods.getBoard(roomId).call({ from: accounts[0] })
 }
 
-export function hasWinner (contract, accounts, roomId) {
+export function hasWinner(contract, accounts, roomId) {
   return contract.methods.hasWinner(roomId)
     .call({ from: accounts[0] })
 }
 
-export function isBoardFull (contract, accounts, roomId) {
-  return contract.methods.isBoardFull(roomId).call({ from: accounts[0] })
-}
-
-export function makeMove (contract, accounts, squareIndex, roomNumber) {
+export function makeMove(contract, accounts, squareIndex, roomNumber) {
   return contract.methods
     .makeMove(squareIndex, roomNumber)
     .send({ from: accounts[0] })
