@@ -59,7 +59,7 @@ contract TicTacToe {
 //       sources = transactions[transactionId].sources; // In case you have array of transactions
 //     }
 
-    function getBoard(uint256 roomNumber) public view returns (int8[9] memory board) {
+    function getBoard(uint256 roomNumber) public view returns (int8[9] memory) {
         return rooms[roomNumber].board;
     }
 
