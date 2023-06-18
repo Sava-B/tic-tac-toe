@@ -2,36 +2,9 @@
 pragma solidity ^0.8.0;
 
 contract TicTacToe {
-    constructor() {
-        createWinningCases();
-    }
-
-    WinningCase[] private winningCases;
-
-    struct WinningCase {
-        uint firstIndex;
-        uint secondIndex;
-        uint thirdIndex;
-    }
-
-    function createWinningCases() private {
-        WinningCase memory case1 = WinningCase(0, 1, 2);
-        WinningCase memory case2 = WinningCase(3, 4, 5);
-        WinningCase memory case3 = WinningCase(6, 7, 8);
-        WinningCase memory case4 = WinningCase(0, 3, 6);
-        WinningCase memory case5 = WinningCase(1, 4, 7);
-        WinningCase memory case6 = WinningCase(2, 5, 8);
-        WinningCase memory case7 = WinningCase(0, 4, 8);
-        WinningCase memory case8 = WinningCase(2, 4, 6);
-        winningCases.push(case1);
-        winningCases.push(case2);
-        winningCases.push(case3);
-        winningCases.push(case4);
-        winningCases.push(case5);
-        winningCases.push(case6);
-        winningCases.push(case7);
-        winningCases.push(case8);
-    }
+    int8 private constant EMPTY_MOVE = 0;
+    int8 private constant O_MOVE = 1;
+    int8 private constant X_MOVE = 2;
 
     struct Room {
         address currentPlayer;
@@ -40,37 +13,39 @@ contract TicTacToe {
         int8[9] board;
         address winner;
         bool isGameFinished;
+        uint8 movesMade;
     }
+
+    uint8[3][8] private winningCases = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
 
     Room[] public rooms; // contract.methods.rooms() -> []Room
 
-    int8 private constant EMPTY_MOVE = 3;
-    int8 private constant O_MOVE = 0;
-    int8 private constant X_MOVE = 1;
-
-    int8[9] private emptyBoard = [
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE,
-        EMPTY_MOVE
-    ];
-
     event RoomCreation(uint256 roomNumber);
 
+    error RoomDoesntExist();
+    error PlayerXHasntJoined();
+    error NotYourTurn();
+    error SquareIsTaken();
+    error GameIsFinished();
+
     function createRoom() public {
-        int8[9] memory board = int8[9](emptyBoard);
         Room memory room = Room(
             msg.sender,
             msg.sender,
             address(0),
-            board,
+            [int8(0), 0, 0, 0, 0, 0, 0, 0, 0],
             address(0),
-            false
+            false,
+            0
         );
         rooms.push(room);
         emit RoomCreation(rooms.length - 1);
@@ -84,76 +59,61 @@ contract TicTacToe {
 //       sources = transactions[transactionId].sources; // In case you have array of transactions
 //     }
 
-    function getBoard(uint256 roomNumber) public view returns (int8[9] memory board) {
-        board = rooms[roomNumber].board;
+    function getBoard(uint256 roomNumber) public view returns (int8[9] memory) {
+        return rooms[roomNumber].board;
     }
 
     function hasWinner(uint8 roomIndex) public view returns (address) {
         for (uint32 i = 0; i < winningCases.length; i++) {
-            WinningCase memory currentCase = winningCases[i];
-            uint firstIndex = currentCase.firstIndex;
-            uint secondIndex = currentCase.secondIndex;
-            uint thirdIndex = currentCase.thirdIndex;
+            uint8[3] memory currentCase = winningCases[i];
+            uint firstIndex = currentCase[0];
+            uint secondIndex = currentCase[1];
+            uint thirdIndex = currentCase[2];
+
+            Room memory room = rooms[roomIndex];
+
             if (
-                rooms[roomIndex].board[firstIndex] ==
-                rooms[roomIndex].board[secondIndex] &&
-                rooms[roomIndex].board[secondIndex] ==
-                rooms[roomIndex].board[thirdIndex] &&
-                rooms[roomIndex].board[firstIndex] != EMPTY_MOVE
+                room.board[firstIndex] != EMPTY_MOVE &&
+                room.board[firstIndex] ==
+                room.board[secondIndex] &&
+                room.board[secondIndex] ==
+                room.board[thirdIndex]
             ) {
-                if (currentCase.firstIndex == 0) {
-                    return rooms[roomIndex].playerO;
+                if (firstIndex == 0) {
+                    return room.playerO;
                 }
-                return rooms[roomIndex].playerX;
+                return room.playerX;
             }
         }
         return address(0);
     }
 
-    function isBoardFull(uint256 roomNumber) private view returns (bool) {
-        int8[9] memory board = rooms[roomNumber].board;
-        for (uint i = 0; i < board.length; i++) {
-            if (board[i] == EMPTY_MOVE) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     function makeMove(uint8 index, uint256 roomNumber) public {
-        require(
-            rooms.length == (index - 1),
-            "The room with corresponding number doesn't exist."
-        );
-        require(
-            rooms[roomNumber].playerX != address(0),
-            "Player X hasn't joined yet."
-        );
-        require(
-            rooms[roomNumber].currentPlayer == msg.sender,
-            "It's not your turn."
-        );
-        require(
-            rooms[roomNumber].board[index] == EMPTY_MOVE,
-            "This square is taken."
-        );
-        require(
-            rooms[roomNumber].isGameFinished,
-            "The board is full, game's finished."
-        );
+        Room storage room = rooms[roomNumber];
+
+        if (room.playerO == address(0)) revert RoomDoesntExist();
+        if (room.playerX == address(0)) revert PlayerXHasntJoined();
+        if (room.currentPlayer != msg.sender) revert NotYourTurn();
+        if (room.board[index] != EMPTY_MOVE) revert SquareIsTaken();
+        if (room.isGameFinished) revert GameIsFinished();
 
         if (msg.sender == rooms[roomNumber].playerX) {
-            rooms[roomNumber].board[index] = X_MOVE;
+            room.board[index] = X_MOVE;
+            room.currentPlayer = room.playerO;
         } else {
-            rooms[roomNumber].board[index] = O_MOVE;
+            room.board[index] = O_MOVE;
+            room.currentPlayer = room.playerX;
         }
+
+        room.movesMade++;
 
         address winner = hasWinner(index);
         if (winner != address(0)) {
-            rooms[roomNumber].isGameFinished = true;
-            rooms[roomNumber].winner = winner;
-        } else if (isBoardFull(roomNumber)) {
-            rooms[roomNumber].isGameFinished = true;
+            room.isGameFinished = true;
+            room.winner = winner;
+        /// @dev 9 is the maximum number of moves for a 3 by 3 square
+        } else if (room.movesMade == 9) {
+            room.isGameFinished = true;
         }
     }
 }
