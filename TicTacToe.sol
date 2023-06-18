@@ -89,7 +89,7 @@ contract TicTacToe {
     }
 
     function hasWinner(uint8 roomIndex) public view returns (address) {
-        for (uint32 i = 0; i < winningCases.length; i++) {
+        for (uint32 i; i < winningCases.length; ++i) {
             WinningCase memory currentCase = winningCases[i];
             uint firstIndex = currentCase.firstIndex;
             uint secondIndex = currentCase.secondIndex;
@@ -112,7 +112,7 @@ contract TicTacToe {
 
     function isBoardFull(uint256 roomNumber) private view returns (bool) {
         int8[9] memory board = rooms[roomNumber].board;
-        for (uint i = 0; i < board.length; i++) {
+        for (uint i; i < board.length; ++i) {
             if (board[i] == EMPTY_MOVE) {
                 return false;
             }
