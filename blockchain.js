@@ -1,4 +1,5 @@
-import Web3 from 'https://cdn.esm.sh/v58/web3@1.6.1/es2021/web3.js'
+// import Web3 from 'https://cdn.jsdelivr.net/npm/web3@4.0.2/dist/web3.min.js'
+
 
 export async function connected() {
   if (typeof web3 === 'undefined') {
